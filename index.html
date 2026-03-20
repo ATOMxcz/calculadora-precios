@@ -56,7 +56,6 @@ input {
   margin-top: 10px;
   cursor: pointer;
   transition: 0.2s;
-  position: relative;
 }
 
 .result:hover {
@@ -96,19 +95,19 @@ input {
 <div class="container">
   <h2>Calculadora</h2>
 
-  <label>Costo</label>
+  <label>Costo base</label>
   <input type="number" id="costo" placeholder="Ej: 100">
 
   <label>Descuento (%)</label>
   <input type="number" id="descuento" value="0">
 
   <div class="result" onclick="copiar('r1', this)">
-    Resultado 1: <span id="r1">$0.00</span>
+    Costo: <span id="r1">$0.00</span>
     <div class="hint">toca para copiar</div>
   </div>
 
   <div class="result" onclick="copiar('r3', this)">
-    Resultado 3: <span id="r3">$0.00</span>
+    Precio de venta: <span id="r3">$0.00</span>
     <div class="hint">toca para copiar</div>
   </div>
 
@@ -130,7 +129,7 @@ function calcular() {
 }
 
 function copiar(id, elemento) {
-  let texto = document.getElementById(id).innerText;
+  let texto = document.getElementById(id).innerText.replace("$", "");
   navigator.clipboard.writeText(texto);
 
   elemento.classList.add("copiado");
