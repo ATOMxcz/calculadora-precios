@@ -9,7 +9,7 @@
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #0f0f0f;
+  background: linear-gradient(180deg, #0a0a0a, #1a1a1a);
   color: white;
   display: flex;
   justify-content: center;
@@ -18,39 +18,53 @@ body {
 }
 
 .container {
-  background: #1c1c1e;
+  background: rgba(28,28,30,0.9);
+  backdrop-filter: blur(20px);
   padding: 25px;
-  border-radius: 20px;
+  border-radius: 24px;
   width: 320px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
 }
 
 h2 {
   text-align: center;
   margin-bottom: 20px;
+  font-weight: 500;
 }
 
 label {
-  font-size: 14px;
-  opacity: 0.7;
+  font-size: 13px;
+  opacity: 0.6;
 }
 
 input {
   width: 100%;
-  padding: 12px;
-  margin: 8px 0 15px;
-  border-radius: 12px;
+  padding: 14px;
+  margin: 6px 0 14px;
+  border-radius: 14px;
   border: none;
   font-size: 16px;
   background: #2c2c2e;
   color: white;
+  outline: none;
 }
 
 .result {
   background: #2c2c2e;
-  padding: 12px;
-  border-radius: 12px;
+  padding: 14px;
+  border-radius: 14px;
   margin-top: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+  position: relative;
+}
+
+.result:hover {
+  background: #3a3a3c;
+}
+
+.result.copiado {
+  background: #0a84ff;
 }
 
 .result span {
@@ -58,29 +72,21 @@ input {
   font-weight: bold;
 }
 
-.buttons {
-  display: flex;
-  gap: 10px;
-  margin-top: 15px;
-}
-
-button {
-  flex: 1;
-  padding: 12px;
-  border-radius: 12px;
-  border: none;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.copy {
-  background: #0a84ff;
-  color: white;
+.hint {
+  font-size: 11px;
+  opacity: 0.4;
+  margin-top: 4px;
 }
 
 .reset {
+  width: 100%;
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 14px;
+  border: none;
   background: #3a3a3c;
   color: white;
+  cursor: pointer;
 }
 </style>
 </head>
@@ -96,18 +102,17 @@ button {
   <label>Descuento (%)</label>
   <input type="number" id="descuento" value="0">
 
-  <div class="result">
+  <div class="result" onclick="copiar('r1', this)">
     Resultado 1: <span id="r1">$0.00</span>
+    <div class="hint">toca para copiar</div>
   </div>
 
-  <div class="result">
+  <div class="result" onclick="copiar('r3', this)">
     Resultado 3: <span id="r3">$0.00</span>
+    <div class="hint">toca para copiar</div>
   </div>
 
-  <div class="buttons">
-    <button class="copy" onclick="copiar()">Copiar</button>
-    <button class="reset" onclick="resetear()">Reset</button>
-  </div>
+  <button class="reset" onclick="resetear()">Reset</button>
 </div>
 
 <script>
@@ -124,15 +129,12 @@ function calcular() {
   document.getElementById("r3").innerText = "$" + r3.toFixed(2);
 }
 
-function copiar() {
-  let r1 = document.getElementById("r1").innerText;
-  let r3 = document.getElementById("r3").innerText;
-
-  let texto = `Resultado 1: ${r1} | Resultado 3: ${r3}`;
-
+function copiar(id, elemento) {
+  let texto = document.getElementById(id).innerText;
   navigator.clipboard.writeText(texto);
 
-  alert("Copiado al portapapeles 📋");
+  elemento.classList.add("copiado");
+  setTimeout(() => elemento.classList.remove("copiado"), 300);
 }
 
 function resetear() {
