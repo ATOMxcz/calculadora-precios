@@ -14,7 +14,9 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
+  padding: 20px 0;
+  box-sizing: border-box;
 }
 
 .container {
@@ -47,6 +49,7 @@ input {
   background: #2c2c2e;
   color: white;
   outline: none;
+  box-sizing: border-box;
 }
 
 .result {
@@ -77,6 +80,35 @@ input {
   margin-top: 4px;
 }
 
+.preview {
+  background: #1c2a1c;
+  padding: 14px;
+  border-radius: 14px;
+  margin-top: 10px;
+  cursor: default;
+  border: 1px solid rgba(48, 209, 88, 0.15);
+}
+
+.preview span {
+  font-size: 18px;
+  font-weight: bold;
+  color: #30d158;
+}
+
+.preview .hint {
+  color: #30d158;
+  opacity: 0.5;
+}
+
+.section-label {
+  font-size: 11px;
+  opacity: 0.35;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 16px;
+  margin-bottom: 2px;
+}
+
 .reset {
   width: 100%;
   margin-top: 15px;
@@ -86,6 +118,11 @@ input {
   background: #3a3a3c;
   color: white;
   cursor: pointer;
+  font-size: 15px;
+}
+
+.reset:hover {
+  background: #48484a;
 }
 </style>
 </head>
@@ -111,21 +148,51 @@ input {
     <div class="hint">toca para copiar</div>
   </div>
 
+  <div class="result" onclick="copiar('menudeo', this)">
+    Precio de menudeo: <span id="menudeo">$0.00</span>
+    <div class="hint">toca para copiar</div>
+  </div>
+
+  <div class="section-label">Previsualización con IVA</div>
+
+  <div class="preview">
+    PDV + IVA: <span id="prevPDV">$0.00</span>
+    <div class="hint">solo referencia</div>
+  </div>
+
+  <div class="preview">
+    Menudeo + IVA: <span id="prevMenudeo">$0.00</span>
+    <div class="hint">solo referencia</div>
+  </div>
+
   <button class="reset" onclick="resetear()">Reset</button>
 </div>
 
 <script>
+function aplicarRedondeo(n) {
+  let d = n % 10;
+  if (d === 7 || d === 8) return n + (9 - d);
+  if (d === 2 || d === 3 || d === 4) return n + (5 - d);
+  return n;
+}
+
 function calcular() {
   let costo = parseFloat(document.getElementById("costo").value) || 0;
   let descuento = parseFloat(document.getElementById("descuento").value) || 0;
 
   let r1 = costo - (costo * (descuento / 100));
   let r2 = r1 * 1.16 * 1.4;
-  let redondeado = Math.round(r2);
-  let r3 = redondeado / 1.16;
+  let redondeadoFinal = aplicarRedondeo(Math.round(r2));
+  let r3 = redondeadoFinal / 1.16;
+  let menudeo = r3 * 1.5;
+  let prevPDV = redondeadoFinal;
+  let prevMenudeo = aplicarRedondeo(Math.round(menudeo * 1.16));
 
   document.getElementById("r1").innerText = "$" + r1.toFixed(2);
   document.getElementById("r3").innerText = "$" + r3.toFixed(2);
+  document.getElementById("menudeo").innerText = "$" + menudeo.toFixed(2);
+  document.getElementById("prevPDV").innerText = "$" + prevPDV.toFixed(2);
+  document.getElementById("prevMenudeo").innerText = "$" + prevMenudeo.toFixed(2);
 }
 
 function copiar(id, elemento) {
